@@ -1,3 +1,4 @@
+import sys
 import cdsapi
 
 days = [
@@ -27,34 +28,32 @@ times = [
 
 c = cdsapi.Client()
 
-# 2m temperature
+if "temperature" in sys.argv:
+    c.retrieve(
+        "reanalysis-era5-single-levels",
+        {
+            "product_type": "reanalysis",
+            "format": "netcdf",
+            "variable": "2m_temperature",
+            "year": "2018",
+            "month": "12",
+            "day": days,
+            "time": times,
+        },
+        "2m_temperature.nc"
+    )
 
-c.retrieve(
-    "reanalysis-era5-single-levels",
-    {
-        "product_type": "reanalysis",
-        "format": "netcdf",
-        "variable": "2m_temperature",
-        "year": "2018",
-        "month": "12",
-        "day": days,
-        "time": times,
-    },
-    "2m_temperature.nc"
-)
-
-# Total precip
-
-c.retrieve(
-    "reanalysis-era5-single-levels",
-    {
-        "product_type": "reanalysis",
-        "format": "netcdf",
-        "variable": "total_precipitation",
-        "year": "2018",
-        "month": "12",
-        "day": days,
-        "time": times,
-    },
-    "total_precipitation.nc"
-)
+if "precipitation" in sys.argv:
+    c.retrieve(
+        "reanalysis-era5-single-levels",
+        {
+            "product_type": "reanalysis",
+            "format": "netcdf",
+            "variable": "total_precipitation",
+            "year": "2018",
+            "month": "12",
+            "day": days,
+            "time": times,
+        },
+        "total_precipitation.nc"
+    )
