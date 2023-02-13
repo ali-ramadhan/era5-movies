@@ -5,7 +5,6 @@ from pathlib import Path
 
 import numpy as np
 import xarray as xr
-import cartopy.crs as ccrs
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -63,13 +62,7 @@ if "temperature" in sys.argv:
 
     Parallel(n_jobs=min(24, os.cpu_count()))(delayed(plot_temperature_frame)(n) for n in range(len(t)))
 
-    (
-        ffmpeg
-        .input("frames/temperature%05d.png", framerate=24)
-        .output("temperature.mp4")
-        .overwrite_output()
-        .run()
-    )
+    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/temperature%05d.png -vcodec libx264 -preset fast -crf 25 -pix_fmt yuv420p temperature_h264_fast_crf25.mp4'.split())
 
     # png_filenames = [filename for filename in os.listdir(os.getcwd()) if filename.endswith(".png")]
     # print(f"Deleting {len(png_filenames)} leftover png files...")
@@ -146,4 +139,4 @@ if "precipitation" in sys.argv:
 
     Parallel(n_jobs=min(24, os.cpu_count()))(delayed(plot_precipitation_frame)(n) for n in range(len(t)))
 
-    subprocess.run('ffmpeg -r 24 -f image2 -i frames/precipitation%05d.png -vcodec libx264 -preset fast -crf 25 -pix_fmt yuv420p precipitation_h264_fast_crf25.mp4'.split())
+    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/precipitation%05d.png -vcodec libx264 -preset fast -crf 25 -pix_fmt yuv420p precipitation_h264_fast_crf25.mp4'.split())

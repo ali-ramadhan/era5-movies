@@ -40,7 +40,7 @@ if "temperature" in sys.argv:
             "day": days,
             "time": times,
         },
-        "2m_temperature.nc"
+        "2m_temperature_2018_12.nc"
     )
 
 if "precipitation" in sys.argv:
@@ -50,10 +50,10 @@ if "precipitation" in sys.argv:
             "product_type": "reanalysis",
             "format": "netcdf",
             "variable": "total_precipitation",
-            "year": "2018",
+            "year": "2020",
             "month": "12",
             "day": days,
             "time": times,
         },
-        "total_precipitation.nc"
+        "total_precipitation_2020_06.nc"
     )
