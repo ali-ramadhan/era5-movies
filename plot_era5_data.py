@@ -9,6 +9,8 @@ import cartopy.crs as ccrs
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import cmocean
 import ffmpeg
 
@@ -37,6 +39,7 @@ def plot_temperature_frame(n):
 
     ax.pcolormesh(lon, lat, T.isel(time=n), **cm_tmp(units="K", levels=None).cmap_kwargs)
     ax.coastlines(resolution="50m", linewidth=0.5, alpha=1)
+    ax.add_feature(cfeature.LAKES.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.axis("off")
 
     plt.tight_layout(pad=0)
