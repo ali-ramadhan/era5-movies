@@ -1,5 +1,6 @@
 import sys
 import cdsapi
+from pathlib import Path
 
 days = [
     "01", "02", "03",
@@ -26,6 +27,10 @@ times = [
     "21:00", "22:00", "23:00"
 ]
 
+data_dir = Path("data")
+if not data_dir.exists():
+    data_dir.mkdir()
+
 c = cdsapi.Client()
 
 if "temperature" in sys.argv:
@@ -40,7 +45,7 @@ if "temperature" in sys.argv:
             "day": days,
             "time": times,
         },
-        "2m_temperature_2018_12.nc"
+        Path(data_dir, "2m_temperature_2018_12.nc")
     )
 
 if "precipitation" in sys.argv:
@@ -50,10 +55,17 @@ if "precipitation" in sys.argv:
             "product_type": "reanalysis",
             "format": "netcdf",
             "variable": "total_precipitation",
-            "year": "2020",
-            "month": "12",
-            "day": days,
+            "year": "2017",
+            "month": "08",
+            "day": [
+                "16", "17", "18",
+                "19", "20", "21",
+                "22", "23", "24",
+                "25", "26", "27",
+                "28", "29", "30",
+                "31"
+            ],
             "time": times,
         },
-        "total_precipitation_2020_06.nc"
+        Path(data_dir, "total_precipitation_2017_08_16-31.nc")
     )

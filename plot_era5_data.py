@@ -11,27 +11,31 @@ import matplotlib.colors as mcolors
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import cmocean
-import ffmpeg
 
 from paint.standard2 import cm_tmp, cm_pcp
 from joblib import Parallel, delayed
 
 
-for d in ["frames", "videos"]:
-    if not os.path.isdir(d):
-        os.mkdir(d)
+data_dir = Path("data")
+frames_dir = Path("frames")
+colorbars_dir = Path("colorbars")
+animations_dir = Path("animations")
+
+for dir in [data_dir, frames_dir, colorbars_dir, animations_dir]:
+    if not dir.exists():
+        dir.mkdir()
 
 
 def plot_temperature_frame(n):
-    ds = xr.open_dataset("2m_temperature.nc")
+    ds = xr.open_dataset(Path(data_dir, "2m_temperature_2018_12.nc"))
 
     t = ds.time
     lat = ds.latitude
     lon = ds.longitude
     T = ds.t2m
 
-    filename = Path("frames", f"temperature{n:05d}.png")
-    print(f"Plotting {filename}...")
+    filepath = Path(frames_dir, f"temperature{n:05d}.png")
+    print(f"Plotting {filepath}...")
 
     fig = plt.figure(figsize=(16, 8))
     ax = plt.axes(projection=ccrs.PlateCarree())
@@ -39,10 +43,11 @@ def plot_temperature_frame(n):
     ax.pcolormesh(lon, lat, T.isel(time=n), **cm_tmp(units="K", levels=None).cmap_kwargs)
     ax.coastlines(resolution="50m", linewidth=0.5, alpha=1)
     ax.add_feature(cfeature.LAKES.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
+    ax.add_feature(cfeature.BORDERS.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.axis("off")
 
     plt.tight_layout(pad=0)
-    plt.savefig(filename, dpi=300, bbox_inches="tight", pad_inches=0)
+    plt.savefig(filepath, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig)
 
 def plot_temperature_colorbar():
@@ -51,22 +56,20 @@ def plot_temperature_colorbar():
     cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None).cmap_kwargs, extend="both", orientation="horizontal")
     cb.set_label("Temperature (°C)")
 
-    plt.savefig("temperature_colorbar.png", transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
+    filepath = Path(colorbars_dir, "temperature_colorbar.png")
+    plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
 
 if "temperature" in sys.argv:
     plot_temperature_colorbar()
 
-    ds = xr.open_dataset("2m_temperature.nc")
+    ds = xr.open_dataset(Path(data_dir, "2m_temperature_2018_12.nc"))
     t = ds.time
     ds.close()
 
     Parallel(n_jobs=min(24, os.cpu_count()))(delayed(plot_temperature_frame)(n) for n in range(len(t)))
 
-    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/temperature%05d.png -vcodec libx264 -preset fast -crf 25 -pix_fmt yuv420p temperature_h264_fast_crf25.mp4'.split())
+    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/temperature%05d.png -vcodec libx264 -preset veryslow -crf 25 -pix_fmt yuv420p -vf scale=iw/2:ih/2 animations/temperature_h264_veryslow_crf25.mp4'.split())
 
-    # png_filenames = [filename for filename in os.listdir(os.getcwd()) if filename.endswith(".png")]
-    # print(f"Deleting {len(png_filenames)} leftover png files...")
-    # [os.remove(filename) for filename in png_filenames]
 
 def precipitation_cmap():
     colors = np.array([
@@ -99,15 +102,15 @@ def precipitation_cmap():
     return cmap, norm
 
 def plot_precipitation_frame(n):
-    ds = xr.open_dataset("total_precipitation.nc")
+    ds = xr.open_dataset(Path(data_dir, "total_precipitation_2017_08_16-31.nc"))
 
     t = ds.time
     lat = ds.latitude
     lon = ds.longitude
     P = ds.tp
 
-    filename = Path("frames", f"precipitation{n:05d}.png")
-    print(f"Plotting {filename}...")
+    filepath = Path(frames_dir, f"precipitation{n:05d}.png")
+    print(f"Plotting {filepath}...")
 
     fig = plt.figure(figsize=(16, 8))
     ax = plt.axes(projection=ccrs.PlateCarree())
@@ -115,10 +118,12 @@ def plot_precipitation_frame(n):
     cmap, norm = precipitation_cmap()
     ax.pcolormesh(lon, lat, 1000 * P.isel(time=n), cmap=cmap, norm=norm)
     ax.coastlines(resolution="50m", linewidth=0.5, alpha=1)
+    ax.add_feature(cfeature.LAKES.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
+    ax.add_feature(cfeature.BORDERS.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.axis("off")
 
     plt.tight_layout(pad=0)
-    plt.savefig(filename, dpi=300, bbox_inches="tight", pad_inches=0)
+    plt.savefig(filepath, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig)
 
 def plot_precipitation_colorbar():
@@ -128,15 +133,16 @@ def plot_precipitation_colorbar():
     cb = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation="horizontal")
     cb.set_label("Precipitation (mm/hour)")
 
-    plt.savefig("precipitation_colorbar.png", transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
+    filepath = Path(colorbars_dir, "precipitation_colorbar.png")
+    plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
 
 if "precipitation" in sys.argv:
     plot_precipitation_colorbar()
 
-    ds = xr.open_dataset("total_precipitation.nc")
+    ds = xr.open_dataset(Path(data_dir, "total_precipitation_2017_08_16-31.nc"))
     t = ds.time
     ds.close()
 
     Parallel(n_jobs=min(24, os.cpu_count()))(delayed(plot_precipitation_frame)(n) for n in range(len(t)))
 
-    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/precipitation%05d.png -vcodec libx264 -preset fast -crf 25 -pix_fmt yuv420p precipitation_h264_fast_crf25.mp4'.split())
+    subprocess.run('ffmpeg -y -r 24 -f image2 -i frames/precipitation%05d.png -vcodec libx264 -preset veryslow -crf 25 -pix_fmt yuv420p -vf scale=iw/2:ih/2 animations/precipitation_h264_veryslow_crf25.mp4'.split())
