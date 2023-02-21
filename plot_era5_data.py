@@ -21,7 +21,7 @@ frames_dir = Path("frames")
 colorbars_dir = Path("colorbars")
 animations_dir = Path("animations")
 
-for dir in [data_dir, frames_dir, colorbars_dir, animations_dir]:
+for dir in [frames_dir, colorbars_dir, animations_dir]:
     if not dir.exists():
         dir.mkdir()
 
@@ -41,7 +41,7 @@ def plot_temperature_frame(n):
     ax = plt.axes(projection=ccrs.PlateCarree())
 
     ax.pcolormesh(lon, lat, T.isel(time=n), **cm_tmp(units="K", levels=None).cmap_kwargs)
-    ax.coastlines(resolution="50m", linewidth=0.5, alpha=1)
+    ax.add_feature(cfeature.COASTLINE.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.add_feature(cfeature.LAKES.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.add_feature(cfeature.BORDERS.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.axis("off")
@@ -117,7 +117,7 @@ def plot_precipitation_frame(n):
 
     cmap, norm = precipitation_cmap()
     ax.pcolormesh(lon, lat, 1000 * P.isel(time=n), cmap=cmap, norm=norm)
-    ax.coastlines(resolution="50m", linewidth=0.5, alpha=1)
+    ax.add_feature(cfeature.COASTLINE.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.add_feature(cfeature.LAKES.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.add_feature(cfeature.BORDERS.with_scale("50m"), linewidth=0.5, alpha=1, facecolor="None", edgecolor="black")
     ax.axis("off")

@@ -133,3 +133,7 @@ dmypy.json
 *.png
 *.mp4
 *.webm
+
+# NaturalEarth maps
+HYP_HR_SR/
+HYP_HR_SR_OB_DR/
