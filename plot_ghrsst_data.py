@@ -57,17 +57,17 @@ def plot_sst_frame(n, date):
     plt.savefig(filepath, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig)
 
-# def plot_temperature_colorbar():
-#     fig, ax = plt.subplots(figsize=(6, 0.5))
+def plot_sst_colorbar():
+    fig, ax = plt.subplots(figsize=(6, 0.5))
 
-#     cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None).cmap_kwargs, extend="both", orientation="horizontal")
-#     cb.set_label("Temperature (°C)")
+    cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None, vmin=-2, vmax=32).cmap_kwargs, extend="both", orientation="horizontal")
+    cb.set_label("Temperature (°C)")
 
-#     filepath = Path(colorbars_dir, "temperature_colorbar.png")
-#     plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
+    filepath = Path(colorbars_dir, "sst_colorbar.png")
+    plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
 
 if "sst" in sys.argv:
-    # plot_temperature_colorbar()
+    plot_sst_colorbar()
 
     dates = [datetime(2019, 1, 1) + timedelta(days=n) for n in range(365)]
 
