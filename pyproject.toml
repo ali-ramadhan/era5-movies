@@ -1,0 +1,17 @@
+[project]
+name = "era5-movies"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "carpenter-workshop",
+    "cartopy>=0.25.0",
+    "cmocean>=4.0.3",
+    "joblib>=1.5.2",
+    "matplotlib>=3.10.6",
+    "netcdf4>=1.7.2",
+    "numpy>=2.3.3",
+    "xarray>=2025.10.1",
+]
+
+[tool.uv.sources]
+carpenter-workshop = { git = "https://github.com/blaylockbk/Carpenter_Workshop.git" }
