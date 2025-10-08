@@ -66,7 +66,9 @@ def plot_ocean_speed_colorbar():
     fig, ax = plt.subplots(figsize=(6, 0.5))
 
     cb = mpl.colorbar.ColorbarBase(ax, cmap="Blues_r", norm=mcolors.Normalize(0, 2), extend="max", orientation="horizontal")
-    cb.set_label("Ocean current speed (m/s)")
+    cb.set_label("Ocean current speed (m/s)", color='white')
+    cb.ax.tick_params(colors='white')
+    cb.outline.set_edgecolor('white')
 
     filepath = Path(colorbars_dir, "ocean_speed_colorbar.png")
     plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)

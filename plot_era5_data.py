@@ -54,7 +54,9 @@ def plot_temperature_colorbar():
     fig, ax = plt.subplots(figsize=(6, 0.5))
 
     cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None).cmap_kwargs, extend="both", orientation="horizontal")
-    cb.set_label("Temperature (°C)")
+    cb.set_label("Temperature (°C)", color='white')
+    cb.ax.tick_params(colors='white')
+    cb.outline.set_edgecolor('white')
 
     filepath = Path(colorbars_dir, "temperature_colorbar.png")
     plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
@@ -131,7 +133,9 @@ def plot_precipitation_colorbar():
 
     cmap, norm = precipitation_cmap()
     cb = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm, orientation="horizontal")
-    cb.set_label("Precipitation (mm/hour)")
+    cb.set_label("Precipitation (mm/hour)", color='white')
+    cb.ax.tick_params(colors='white')
+    cb.outline.set_edgecolor('white')
 
     filepath = Path(colorbars_dir, "precipitation_colorbar.png")
     plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)

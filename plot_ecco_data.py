@@ -60,14 +60,16 @@ def plot_sst_frame(n, date):
     plt.savefig(filepath, dpi=300, bbox_inches="tight", pad_inches=0)
     plt.close(fig)
 
-# def plot_temperature_colorbar():
-#     fig, ax = plt.subplots(figsize=(6, 0.5))
+def plot_temperature_colorbar():
+    fig, ax = plt.subplots(figsize=(6, 0.5))
 
-#     cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None).cmap_kwargs, extend="both", orientation="horizontal")
-#     cb.set_label("Temperature (°C)")
+    cb = mpl.colorbar.ColorbarBase(ax, **cm_tmp(units="C", levels=None).cmap_kwargs, extend="both", orientation="horizontal")
+    cb.set_label("Temperature (°C)", color='white')
+    cb.ax.tick_params(colors='white')
+    cb.outline.set_edgecolor('white')
 
-#     filepath = Path(colorbars_dir, "temperature_colorbar.png")
-#     plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
+    filepath = Path(colorbars_dir, "temperature_colorbar.png")
+    plt.savefig(filepath, transparent=True, dpi=300, bbox_inches="tight", pad_inches=0)
 
 if "sst" in sys.argv:
     # plot_temperature_colorbar()
